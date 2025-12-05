@@ -21,7 +21,7 @@ public class CommentController {
     public List<CommentDto> getCommentList(@PathVariable int postId) {
         List<Comment> comments = postService.findCommentsById(postId);
         return comments.stream()
-                .map(comment -> new CommentDto(comment))
+                .map(CommentDto::new) // = comment -> new CommentDto(comment)
                 .toList();
     }
 

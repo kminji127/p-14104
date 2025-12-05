@@ -21,7 +21,7 @@ public class ApiV1PostController {
     public List<PostDto> getItems() {
         List<Post> items = postService.findAll();
         return items.stream()
-                .map(post -> new PostDto(post)) // = PostDto::new
+                .map(PostDto::new) // = post -> new PostDto(post)
                 .toList();
     }
 
