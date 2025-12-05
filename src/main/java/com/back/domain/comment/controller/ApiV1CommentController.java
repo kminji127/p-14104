@@ -3,6 +3,7 @@ package com.back.domain.comment.controller;
 import com.back.domain.comment.dto.CommentDto;
 import com.back.domain.comment.entity.Comment;
 import com.back.domain.post.service.PostService;
+import com.back.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/posts/{postId}/comments")
-public class CommentController {
+public class ApiV1CommentController {
     private final PostService postService;
 
     @GetMapping
@@ -37,9 +38,10 @@ public class CommentController {
 
     @GetMapping("{id}/delete")
     @Transactional
-    public String delete(@PathVariable int postId,
+    public RsData delete(@PathVariable int postId,
                          @PathVariable int id) {
         postService.deleteComment(postId, id);
-        return "%d번 댓글이 삭제되었습니다.".formatted(id);
+        return new RsData("200-1", "댓글이 삭제되었습니다.");
     }
+
 }
