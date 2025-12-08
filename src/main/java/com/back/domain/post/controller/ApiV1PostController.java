@@ -6,10 +6,7 @@ import com.back.domain.post.service.PostService;
 import com.back.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -35,7 +32,7 @@ public class ApiV1PostController {
         return new PostDto(post);
     }
 
-    @GetMapping("{id}/delete")
+    @DeleteMapping("{id}")
     @Transactional
     public RsData<PostDto> delete(@PathVariable int id) {
         PostDto deletedPost = postService.delete(id);
