@@ -1,6 +1,7 @@
 package com.back.domain.post.service;
 
 import com.back.domain.comment.entity.Comment;
+import com.back.domain.post.dto.PostDto;
 import com.back.domain.post.entity.Post;
 import com.back.domain.post.repository.PostRepository;
 import jakarta.transaction.Transactional;
@@ -38,10 +39,11 @@ public class PostService {
         return post;
     }
 
-    public void delete(int id) {
+    public PostDto delete(int id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
         postRepository.delete(post);
+        return new PostDto(post);
     }
 
     public List<Comment> findCommentsById(int id) {

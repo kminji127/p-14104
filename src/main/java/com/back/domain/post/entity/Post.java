@@ -23,6 +23,7 @@ public class Post extends BaseEntity {
     private String content;
 
     // mappedBy: comment에서 저장된 변수명, fetch: 기본값 LAZY
+    // REMOVE: 관련된 댓글이 자동으로 먼저 삭제
     // orphanRemoval: 고아 객체 제거 (List에 제거하면 리모콘(주소)만 제거되고 객체는 남아 있으므로)
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = {PERSIST, REMOVE}, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
