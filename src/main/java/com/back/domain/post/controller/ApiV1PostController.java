@@ -8,6 +8,8 @@ import com.back.domain.post.service.PostService;
 import com.back.global.rsData.RsData;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,9 +24,18 @@ public class ApiV1PostController {
     @PostMapping()
     @Transactional
     // @RequestBody: 클라이언트가 보낸 JSON 데이터를 Java 객체로 자동 매핑
-    public RsData<PostWriteResponse> writePost(@Valid @RequestBody PostWriteRequest postWriteRequest) {
+    public ResponseEntity<RsData<PostWriteResponse>> writePost(@Valid @RequestBody PostWriteRequest postWriteRequest) {
         Post createdPost = postService.write(postWriteRequest.title(), postWriteRequest.content());
-        return new RsData<>("200-1", "%d번 글이 생성되었습니다.".formatted(createdPost.getId()), new PostWriteResponse(postService.count(), new PostDto(createdPost)));
+        return new ResponseEntity<>(
+                new RsData<>(
+                        "200-1",
+                        "%d번 글이 생성되었습니다.".formatted(createdPost.getId()),
+                        new PostWriteResponse(
+                                postService.count(),
+                                new PostDto(createdPost)
+                        )
+                ),
+                HttpStatus.CREATED);
     }
 
     @GetMapping
