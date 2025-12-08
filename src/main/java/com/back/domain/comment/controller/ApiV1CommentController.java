@@ -1,9 +1,11 @@
 package com.back.domain.comment.controller;
 
 import com.back.domain.comment.dto.CommentDto;
+import com.back.domain.comment.dto.CommentModifyRequest;
 import com.back.domain.comment.entity.Comment;
 import com.back.domain.post.service.PostService;
 import com.back.global.rsData.RsData;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +33,15 @@ public class ApiV1CommentController {
                                  @PathVariable int id) {
         Comment comment = postService.findCommentByPostIdAndCommentId(postId, id);
         return new CommentDto(comment);
+    }
+
+    @PutMapping("{id}")
+    @Transactional
+    public RsData<CommentDto> modify(@PathVariable int postId,
+                                     @PathVariable int id,
+                                     @Valid @RequestBody CommentModifyRequest commentModifyRequest) {
+        Comment comment = postService.modifyComment(postId, id, commentModifyRequest.content());
+        return new RsData<>("200-1", "%d번 댓글이 수정되었습니다.".formatted(id), new CommentDto(comment));
     }
 
     @DeleteMapping("{id}")

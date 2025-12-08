@@ -70,11 +70,12 @@ public class PostService {
         return post.deleteComment(commentId);
     }
 
-    public void modifyComment(int postId, int commentId, String content) {
+    public Comment modifyComment(int postId, int commentId, String content) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
         Comment comment = post.findCommentById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다."));
         comment.modify(content);
+        return comment;
     }
 }
