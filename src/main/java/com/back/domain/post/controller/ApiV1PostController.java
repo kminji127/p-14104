@@ -1,6 +1,7 @@
 package com.back.domain.post.controller;
 
 import com.back.domain.post.dto.PostDto;
+import com.back.domain.post.dto.PostModifyRequest;
 import com.back.domain.post.dto.PostWriteRequest;
 import com.back.domain.post.dto.PostWriteResponse;
 import com.back.domain.post.entity.Post;
@@ -48,6 +49,14 @@ public class ApiV1PostController {
     public PostDto getItem(@PathVariable int id) {
         Post post = postService.findById(id).get();
         return new PostDto(post);
+    }
+
+    @PutMapping("{id}")
+    @Transactional
+    public RsData<PostDto> modify(@PathVariable int id,
+                                  @Valid @RequestBody PostModifyRequest postModifyRequest) {
+        Post updatedPost = postService.modify(id, postModifyRequest.title(), postModifyRequest.content());
+        return new RsData<>("200-1", "%d번 글이 수정되었습니다.".formatted(id), new PostDto(updatedPost));
     }
 
     @DeleteMapping("{id}")
