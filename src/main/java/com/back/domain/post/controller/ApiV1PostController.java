@@ -26,7 +26,7 @@ public class ApiV1PostController {
     public RsData<PostWriteResponse> writePost(@Valid @RequestBody PostWriteRequest postWriteRequest) {
         Post createdPost = postService.write(postWriteRequest.title(), postWriteRequest.content());
         return new RsData<>(
-                "200-1",
+                "201-1",
                 "%d번 글이 생성되었습니다.".formatted(createdPost.getId()),
                 new PostWriteResponse(
                         postService.count(),
