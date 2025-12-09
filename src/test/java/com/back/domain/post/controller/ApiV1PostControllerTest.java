@@ -14,8 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -98,5 +97,28 @@ public class ApiV1PostControllerTest {
 //        Post post = postService.findById(id).get();
 //        assertThat(post.getTitle()).isEqualTo("제목 new");
 //        assertThat(post.getContent()).isEqualTo("내용 new");
+    }
+
+    @Test
+    @DisplayName("글 삭제")
+    void t3() throws Exception {
+        int id = 1;
+        ResultActions resultActions = mvc
+                .perform(
+                        delete("/api/v1/posts/" + id)
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print()); // 응답결과를 출력합니다.
+
+        resultActions
+                // 특정 컨트롤러의 액션메서드가 실행되었는지 체크
+                .andExpect(handler().handlerType(ApiV1PostController.class))
+                .andExpect(handler().methodName("delete"))
+                // 응답 코드 비교
+                .andExpect(status().isOk())
+                // json 값 비교
+                .andExpect(jsonPath("$.resultCode").value("200-1"))
+                .andExpect(jsonPath("$.msg").value("%d번 글이 삭제되었습니다.".formatted(id)))
+        ;
     }
 }
