@@ -69,9 +69,10 @@ public class ApiV1PostControllerTest {
     @Test
     @DisplayName("글 수정")
     void t2() throws Exception {
+        int id = 1;
         ResultActions resultActions = mvc
                 .perform(
-                        put("/api/v1/posts/1")
+                        put("/api/v1/posts/" + id)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
                                         {
@@ -82,7 +83,20 @@ public class ApiV1PostControllerTest {
                 )
                 .andDo(print()); // 응답결과를 출력합니다.
 
-        // 201 Created 상태코드 검증
-        resultActions.andExpect(status().isOk());
+        resultActions
+                // 특정 컨트롤러의 액션메서드가 실행되었는지 체크
+                .andExpect(handler().handlerType(ApiV1PostController.class))
+                .andExpect(handler().methodName("modify"))
+                // 응답 코드 비교
+                .andExpect(status().isOk())
+                // json 값 비교
+                .andExpect(jsonPath("$.resultCode").value("200-1"))
+                .andExpect(jsonPath("$.msg").value("%d번 글이 수정되었습니다.".formatted(id)))
+        ;
+
+        // 수정된 내용 체크 (과한 테스트, 선택사항)
+//        Post post = postService.findById(id).get();
+//        assertThat(post.getTitle()).isEqualTo("제목 new");
+//        assertThat(post.getContent()).isEqualTo("내용 new");
     }
 }
