@@ -68,6 +68,69 @@ public class ApiV1PostControllerTest {
     }
 
     @Test
+    @DisplayName("글 쓰기 - 제목 빈값(400)")
+    void t1_title_empty_400() throws Exception {
+        ResultActions resultActions = mvc
+                .perform(
+                        post("/api/v1/posts")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("""
+                                        {
+                                            "title": "",
+                                            "content": "내용"
+                                        }
+                                        """)
+                )
+                .andDo(print()); // 응답결과를 출력합니다.
+
+        resultActions
+                // 특정 컨트롤러의 액션메서드가 실행되었는지 체크
+                .andExpect(handler().handlerType(ApiV1PostController.class))
+                .andExpect(handler().methodName("writePost"))
+                // 응답 코드 비교
+                .andExpect(status().isBadRequest())
+                // json 값 비교
+                .andExpect(jsonPath("$.resultCode").value("400-1"))
+                .andExpect(jsonPath("$.msg").value("""
+                        title-NotBlank-must not be blank
+                        title-Size-size must be between 2 and 100
+                        """.stripIndent().trim()))
+        ;
+    }
+
+    @Test
+    @DisplayName("글 쓰기 - 내용 빈값(400)")
+    void t1_content_empty_400() throws Exception {
+        ResultActions resultActions = mvc
+                .perform(
+                        post("/api/v1/posts")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("""
+                                        {
+                                            "title": "제목",
+                                            "content": ""
+                                        }
+                                        """)
+                )
+                .andDo(print()); // 응답결과를 출력합니다.
+
+        resultActions
+                // 특정 컨트롤러의 액션메서드가 실행되었는지 체크
+                .andExpect(handler().handlerType(ApiV1PostController.class))
+                .andExpect(handler().methodName("writePost"))
+                // 응답 코드 비교
+                .andExpect(status().isBadRequest())
+                // json 값 비교
+                .andExpect(jsonPath("$.resultCode").value("400-1"))
+                .andExpect(jsonPath("$.msg").value("""
+                        content-NotBlank-must not be blank
+                        content-Size-size must be between 2 and 5000
+                        """.stripIndent().trim()))
+        ;
+    }
+
+
+    @Test
     @DisplayName("글 수정")
     void t2() throws Exception {
         int id = 1;
@@ -170,13 +233,15 @@ public class ApiV1PostControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andDo(print()); // 응답결과를 출력합니다.
-        
+
         resultActions
                 // 특정 컨트롤러의 액션메서드가 실행되었는지 체크
                 .andExpect(handler().handlerType(ApiV1PostController.class))
                 .andExpect(handler().methodName("getItem"))
                 // 응답 코드 비교
                 .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.resultCode").value("404-1"))
+                .andExpect(jsonPath("$.msg").value("해당 데이터가 존재하지 않습니다."))
         ;
     }
 
