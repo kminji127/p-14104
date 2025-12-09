@@ -47,7 +47,6 @@ public class ApiV1PostControllerTest {
                 .andDo(print()); // 응답결과를 출력합니다.
 
         Post post = postService.findLatest().get();
-        long totalCount = postService.count();
 
         // 201 Created 상태코드 검증
         resultActions
@@ -59,12 +58,11 @@ public class ApiV1PostControllerTest {
                 // json 값 비교
                 .andExpect(jsonPath("$.resultCode").value("201-1"))
                 .andExpect(jsonPath("$.msg").value("%d번 글이 생성되었습니다.".formatted(post.getId())))
-                .andExpect(jsonPath("$.data.totalCount").value(totalCount))
-                .andExpect(jsonPath("$.data.post.id").value(post.getId()))
-                .andExpect(jsonPath("$.data.post.createDate").value(Matchers.startsWith(post.getCreatedDate().toString().substring(0, 20))))
-                .andExpect(jsonPath("$.data.post.modifyDate").value(Matchers.startsWith(post.getModifyDate().toString().substring(0, 20))))
-                .andExpect(jsonPath("$.data.post.title").value("제목"))
-                .andExpect(jsonPath("$.data.post.content").value("내용"))
+                .andExpect(jsonPath("$.data.id").value(post.getId()))
+                .andExpect(jsonPath("$.data.createDate").value(Matchers.startsWith(post.getCreatedDate().toString().substring(0, 20))))
+                .andExpect(jsonPath("$.data.modifyDate").value(Matchers.startsWith(post.getModifyDate().toString().substring(0, 20))))
+                .andExpect(jsonPath("$.data.title").value("제목"))
+                .andExpect(jsonPath("$.data.content").value("내용"))
         ;
     }
 
