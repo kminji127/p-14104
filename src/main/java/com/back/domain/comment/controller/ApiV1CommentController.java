@@ -6,6 +6,8 @@ import com.back.domain.comment.dto.CommentWriteRequest;
 import com.back.domain.comment.entity.Comment;
 import com.back.domain.post.service.PostService;
 import com.back.global.rsData.RsData;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,11 +18,13 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/posts/{postId}/comments")
+@Tag(name = "ApiV1CommentController", description = "API 댓글 컨트롤러")
 public class ApiV1CommentController {
     private final PostService postService;
 
     @PostMapping()
     @Transactional
+    @Operation(summary = "작성")
     public RsData<CommentDto> writeComment(@PathVariable int postId,
                                            @Valid @RequestBody CommentWriteRequest commentWriteRequest) {
         Comment createdComment = postService.writeComment(postId, commentWriteRequest.content());
@@ -33,6 +37,7 @@ public class ApiV1CommentController {
 
     @GetMapping
     @Transactional(readOnly = true)
+    @Operation(summary = "다건 조회")
     public List<CommentDto> getCommentList(@PathVariable int postId) {
         List<Comment> comments = postService.findCommentsById(postId);
         return comments.stream()
@@ -42,6 +47,7 @@ public class ApiV1CommentController {
 
     @GetMapping("{id}")
     @Transactional(readOnly = true)
+    @Operation(summary = "단건 조회")
     public CommentDto getComment(@PathVariable int postId,
                                  @PathVariable int id) {
         Comment comment = postService.findCommentByPostIdAndCommentId(postId, id);
@@ -50,6 +56,7 @@ public class ApiV1CommentController {
 
     @PutMapping("{id}")
     @Transactional
+    @Operation(summary = "수정")
     public RsData<CommentDto> modify(@PathVariable int postId,
                                      @PathVariable int id,
                                      @Valid @RequestBody CommentModifyRequest commentModifyRequest) {
@@ -59,6 +66,7 @@ public class ApiV1CommentController {
 
     @DeleteMapping("{id}")
     @Transactional
+    @Operation(summary = "삭제")
     public RsData<CommentDto> delete(@PathVariable int postId,
                                      @PathVariable int id) {
         Comment comment = postService.findCommentByPostIdAndCommentId(postId, id);
