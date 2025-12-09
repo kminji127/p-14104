@@ -44,23 +44,19 @@ public class PostService {
     }
 
     public PostDto delete(int id) {
-        Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+        Post post = postRepository.findById(id).get();
         postRepository.delete(post);
         return new PostDto(post);
     }
 
     public List<Comment> findCommentsById(int id) {
-        Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+        Post post = postRepository.findById(id).get();
         return post.getComments();
     }
 
     public Comment findCommentByPostIdAndCommentId(int id, int commentId) {
-        Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
-        return post.findCommentById(commentId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다."));
+        Post post = postRepository.findById(id).get();
+        return post.findCommentById(commentId).get();
     }
 
     public void addComment(int id, String commentContent) {
@@ -69,16 +65,13 @@ public class PostService {
     }
 
     public boolean deleteComment(int postId, int commentId) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+        Post post = postRepository.findById(postId).get();
         return post.deleteComment(commentId);
     }
 
     public Comment modifyComment(int postId, int commentId, String content) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
-        Comment comment = post.findCommentById(commentId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다."));
+        Post post = postRepository.findById(postId).get();
+        Comment comment = post.findCommentById(commentId).get();
         comment.modify(content);
         return comment;
     }
