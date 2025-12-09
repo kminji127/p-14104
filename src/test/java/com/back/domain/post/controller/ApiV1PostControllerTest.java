@@ -161,6 +161,26 @@ public class ApiV1PostControllerTest {
     }
 
     @Test
+    @DisplayName("글 단건 조회 - 없는 글(404)")
+    void t4_404() throws Exception {
+        int id = Integer.MAX_VALUE;
+        ResultActions resultActions = mvc
+                .perform(
+                        get("/api/v1/posts/" + id)
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print()); // 응답결과를 출력합니다.
+        
+        resultActions
+                // 특정 컨트롤러의 액션메서드가 실행되었는지 체크
+                .andExpect(handler().handlerType(ApiV1PostController.class))
+                .andExpect(handler().methodName("getItem"))
+                // 응답 코드 비교
+                .andExpect(status().isNotFound())
+        ;
+    }
+
+    @Test
     @DisplayName("글 다건 조회")
     void t5() throws Exception {
         ResultActions resultActions = mvc
