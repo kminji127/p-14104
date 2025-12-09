@@ -49,6 +49,15 @@ public class PostService {
         return new PostDto(post);
     }
 
+    public Comment writeComment(int postId, String content) {
+        Post post = postRepository.findById(postId).get();
+        // 트랜잭션 끝난 후 수행되어야 하는 더티 체킹 및 여러 작업들을 지금 당장 수행
+        // flush하지 않으면 트랜잭션 달아도 댓글이 생성되지 않음 (@Transactional 메서드가 끝날 때 커밋되는데, 이 시점에서는 아직 커밋이 안 되었기 때문)
+        Comment comment = post.addComment(content);
+        postRepository.flush();
+        return comment;
+    }
+
     public List<Comment> findCommentsById(int id) {
         Post post = postRepository.findById(id).get();
         return post.getComments();

@@ -38,9 +38,10 @@ public class Post extends BaseEntity {
         this.content = content;
     }
 
-    public void addComment(String content) {
+    public Comment addComment(String content) {
         Comment comment = new Comment(this, content);
         comments.add(comment);
+        return comment;
     }
 
     public Optional<Comment> findCommentById(int commentId) {

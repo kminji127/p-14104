@@ -1,6 +1,7 @@
 package com.back.domain.comment.controller;
 
 import com.back.domain.comment.entity.Comment;
+import com.back.domain.post.entity.Post;
 import com.back.domain.post.service.PostService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
@@ -159,6 +160,41 @@ public class ApiV1CommentControllerTest {
                 // json 값 비교
                 .andExpect(jsonPath("$.resultCode").value("200-1"))
                 .andExpect(jsonPath("$.msg").value("%d번 댓글이 수정되었습니다.".formatted(commentId)))
+        ;
+    }
+
+    @Test
+    @DisplayName("댓글 작성")
+    void t5() throws Exception {
+        int postId = 1;
+        ResultActions resultActions = mvc
+                .perform(
+                        post("/api/v1/posts/" + postId + "/comments")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("""
+                                        {
+                                            "content": "내용"
+                                        }
+                                        """)
+                )
+                .andDo(print()); // 응답결과를 출력합니다.
+
+        Post post = postService.findById(postId).get();
+        Comment comment = post.getComments().getLast();
+
+        resultActions
+                // 특정 컨트롤러의 액션메서드가 실행되었는지 체크
+                .andExpect(handler().handlerType(ApiV1CommentController.class))
+                .andExpect(handler().methodName("writeComment"))
+                // 응답 코드 비교
+                .andExpect(status().isCreated())
+                // json 값 비교
+                .andExpect(jsonPath("$.resultCode").value("201-1"))
+                .andExpect(jsonPath("$.msg").value("%d번 댓글이 생성되었습니다.".formatted(comment.getId())))
+                .andExpect(jsonPath("$.data.id").value(comment.getId()))
+                .andExpect(jsonPath("$.data.createDate").value(Matchers.startsWith(comment.getCreatedDate().toString().substring(0, 20))))
+                .andExpect(jsonPath("$.data.modifyDate").value(Matchers.startsWith(comment.getModifyDate().toString().substring(0, 20))))
+                .andExpect(jsonPath("$.data.content").value("내용"))
         ;
     }
 }
