@@ -121,4 +121,40 @@ public class ApiV1PostControllerTest {
                 .andExpect(jsonPath("$.msg").value("%d번 글이 삭제되었습니다.".formatted(id)))
         ;
     }
+
+    @Test
+    @DisplayName("글 단건 조회")
+    void t4() throws Exception {
+        int id = 1;
+        ResultActions resultActions = mvc
+                .perform(
+                        get("/api/v1/posts/" + id)
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print()); // 응답결과를 출력합니다.
+
+        Post post = postService.findById(id).get();
+
+        resultActions
+                // 특정 컨트롤러의 액션메서드가 실행되었는지 체크
+                .andExpect(handler().handlerType(ApiV1PostController.class))
+                .andExpect(handler().methodName("getItem"))
+                // 응답 코드 비교
+                .andExpect(status().isOk())
+                // json 값 체크 (데이터 형태 유효성만 검증)
+                .andExpect(jsonPath("$.id").isNumber())
+                .andExpect(jsonPath("$.createDate").isString())
+                .andExpect(jsonPath("$.modifyDate").isString())
+                .andExpect(jsonPath("$.title").isString())
+                .andExpect(jsonPath("$.content").isString())
+//                // json 값 체크 (값까지 체크, 선택)
+//                .andExpect(jsonPath("$.id").value(post.getId()))
+//                .andExpect(jsonPath("$.createDate").value(Matchers.startsWith(post.getCreatedDate().toString()
+//                .substring(0, 20))))
+//                .andExpect(jsonPath("$.modifyDate").value(Matchers.startsWith(post.getModifyDate().toString()
+//                .substring(0, 20))))
+//                .andExpect(jsonPath("$.title").value(post.getTitle()))
+//                .andExpect(jsonPath("$.content").value(post.getContent()))
+        ;
+    }
 }
