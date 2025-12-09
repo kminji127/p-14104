@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles("test") // 테스트 환경에서는 test 프로파일을 활성화합니다.
@@ -41,7 +42,12 @@ public class ApiV1PostControllerTest {
                 .andDo(print()); // 응답결과를 출력합니다.
 
         // 201 Created 상태코드 검증
-        resultActions.andExpect(status().isCreated());
+        resultActions
+                // 특정 컨트롤러의 액션메서드가 실행되었는지 체크
+                .andExpect(handler().handlerType(ApiV1PostController.class))
+                .andExpect(handler().methodName("writePost"))
+                // 응답 코드 비교
+                .andExpect(status().isCreated());
     }
 
     @Test
